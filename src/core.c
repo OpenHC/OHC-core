@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 ohc_core_field_t**	core_fields = NULL;
 uint16_t			core_fieldnum = 0;
+void				(*core_write_callback)(uint16_t);
 
 //Initializes OHC_CORE. Must be called before calling any other functions from core
 uint8_t core_setup(uint16_t fieldnum)
@@ -70,6 +71,8 @@ uint8_t core_write_field(uint16_t id, uint8_t* data, uint16_t offset, uint16_t l
 	if(length > field->length)
 		return CORE_ERROR_OUT_OF_FIELD_BOUNDS;
 	memcpy(field->data, data + offset, length);
+	if(core_write_callback != NULL)
+		core_write_callback(id);
 	return CORE_OK;
 }
 
@@ -98,6 +101,8 @@ uint8_t core_write_field_ext(uint16_t id, uint8_t* data, uint16_t offset, uint16
 	if(length > field->length)
 		return CORE_ERROR_OUT_OF_FIELD_BOUNDS;
 	memcpy(field->data, data + offset, length);
+	if(core_write_callback != NULL)
+		core_write_callback(id);
 	return CORE_OK;
 }
 
@@ -113,5 +118,17 @@ uint8_t core_read_field_ext(uint16_t id, uint8_t* data, uint16_t offset, uint16_
 	if((length + offset) > field->length)
 		return CORE_ERROR_OUT_OF_FIELD_BOUNDS;
 	memcpy(data, field->data + offset, length);
+	return CORE_OK;
+}
+
+uint8_t core_set_write_callback(void (*callback)(uint16_t))
+{
+	core_write_callback = callback;
+	return CORE_OK;
+}
+
+uint8_t core_clear_write_callback(void)
+{
+	core_write_callback = NULL;
 	return CORE_OK;
 }

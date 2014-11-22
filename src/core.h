@@ -53,6 +53,8 @@ THE SOFTWARE.
 	extern uint8_t core_unregister_field(uint16_t id);
 	extern uint8_t core_write_field_ext(uint16_t id, uint8_t* data, uint16_t offset, uint16_t length);
 	extern uint8_t core_read_field_ext(uint16_t id, uint8_t* data, uint16_t offset, uint16_t length);
+	extern uint8_t core_set_write_callback(void (*callback)(uint16_t));
+	extern uint8_t core_clear_write_callback(void);
 	
 	#include "core.c"
 #endif
