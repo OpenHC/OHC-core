@@ -18,46 +18,34 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+
+Data packet:
+	[0..4]					Address
+	[5.5, 5.1, 5.1, 5.1]	Data len, Operation, Continuation, Last packet
+	[6..7]					Field index
+	[8..31]					Data
+	
+	Operation = 0 => read
+	Operation = 1 => write
 */
 
-#ifndef __OHC_CORE_H__
-#define __OHC_CORE_H__
-
-	#include <stdlib.h>
-	#include <string.h>
-	
-	//Typedef
-	typedef struct  
-	{
-		uint8_t*	data;
-		uint16_t	length;
-		struct
-		{
-			uint8_t r:1;
-			uint8_t w:1;
-		}
-		perms;
-	}
-	ohc_core_field_t;
+#ifndef __OHC_CORE_REMOTE_H__
+#define __OHC_CORE_REMOTE_H__
 	
 	//Exit codes
-	#define CORE_OK 0
-	#define CORE_ERROR_OUT_OF_MEM 1
-	#define CORE_ERROR_NO_SUCH_FIELD 2
-	#define CORE_ERROR_EMPTY_FIELD 3
-	#define CORE_ERROR_OUT_OF_FIELD_BOUNDS 4
-	#define CORE_ERROR_PERMISSION_DENIED 5
+	#define CORE_REMOTE_ERROR_ADDR_TOO_SHORT	100
+	#define CORE_REMOTE_ERROR_ADDR_TOO_LONG		101
+	#define CORE_REMOTE_ERROR_PAYLOAD_TOO_LONG	102
 	
-	extern uint8_t core_setup(uint16_t fieldnum);
-	extern uint8_t core_register_field(uint16_t id, uint8_t* fieldptr, uint16_t length, uint8_t r, uint8_t w);
-	extern uint8_t core_unregister_field(uint16_t id);
-	extern uint8_t core_write_field_ext(uint16_t id, uint8_t* data, uint16_t offset, uint16_t length);
-	extern uint8_t core_read_field_ext(uint16_t id, uint8_t* data, uint16_t offset, uint16_t length);
-	extern uint8_t core_set_write_callback(void (*callback)(uint16_t));
-	extern uint8_t core_clear_write_callback(void);
+	#define CORE_REMOTE_PACKET_OVERHEAD			8
 	
-	#include "core.c"
-	#ifdef __NRF24L01_LIB_H__
-		#include "core_remote.h"
+	#if WIRELESS_PACK_LEN <= CORE_REMOTE_PACKET_OVERHEAD
+		#error "NRF24L01 packet too short to store any data"
 	#endif
+	
+	uint8_t core_remote_init(uint8_t* addr, uint8_t addr_len);
+	uint8_t core_remote_write_field(uint8_t* addr, uint8_t addr_len, uint16_t id, uint8_t* data, uint16_t offset, uint16_t length);
+	
+	#include "core_remote.c"
 #endif
