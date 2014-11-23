@@ -79,12 +79,36 @@ uint8_t core_remote_write_field(uint8_t* addr, uint8_t addr_len, uint16_t id, ui
 	packptr += 2;
 	memcpy(packptr, data + offset, length);
 	NRF24L01_send_data(packptr, WIRELESS_PACK_LEN);
+	free(packet);
 	core_remote_NRF.sending = TRUE;
 	return CORE_OK;
 }
 
 uint8_t core_remote_main(void)
 {
+	if(core_remote_NRF.data_ready)
+	{
+		uint8_t* data = malloc(WIRELESS_PACK_LEN);
+		if(data == NULL)
+			return CORE_ERROR_OUT_OF_MEM;
+		NRF24L01_get_received_data(data, WIRELESS_PACK_LEN);
+		uint8_t* packptr = data;
+		packptr += 5;
+		uint8_t data_len = *packptr & 0b11111;
+		uint8_t rw = *packptr++ & 0b100000; //Ignoring bit 6 and 7 so far
+		uint16_t id =	*packptr++;
+		id |= *packptr++ << 8;
+		if(rw)
+		{
+			//Write
+			core_write_field_ext(id, packptr, 0, data_len);
+		}
+		else
+		{
+			//Read	
+		}
+		free(data);
+	}
 	return CORE_OK;
 }
 

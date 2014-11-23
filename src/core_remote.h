@@ -39,13 +39,14 @@ Data packet:
 	#define CORE_REMOTE_ERROR_PAYLOAD_TOO_LONG	102
 	
 	#define CORE_REMOTE_PACKET_OVERHEAD			8
-	
+		
 	#if WIRELESS_PACK_LEN <= CORE_REMOTE_PACKET_OVERHEAD
 		#error "NRF24L01 packet too short to store any data"
 	#endif
 	
-	uint8_t core_remote_init(uint8_t* addr, uint8_t addr_len);
-	uint8_t core_remote_write_field(uint8_t* addr, uint8_t addr_len, uint16_t id, uint8_t* data, uint16_t offset, uint16_t length);
+	extern uint8_t core_remote_init(uint8_t* addr, uint8_t addr_len);
+	extern uint8_t core_remote_write_field(uint8_t* addr, uint8_t addr_len, uint16_t id, uint8_t* data, uint16_t offset, uint16_t length);
+	extern uint8_t core_remote_main(void);
 	
 	#include "core_remote.c"
 #endif
