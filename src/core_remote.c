@@ -78,7 +78,7 @@ uint8_t core_remote_write_field(uint8_t* addr, uint8_t addr_len, uint16_t id, ui
 	memcpy(packptr, &id, 2); //Copy field address
 	packptr += 2;
 	memcpy(packptr, data + offset, length);
-	NRF24L01_send_data(packptr, WIRELESS_PACK_LEN);
+	NRF24L01_send_data(packet, WIRELESS_PACK_LEN);
 	free(packet);
 	core_remote_NRF.sending = TRUE;
 	return CORE_OK;
@@ -96,9 +96,11 @@ uint8_t core_remote_main(void)
 		uint8_t* packptr = data;
 		packptr += 5;
 		uint8_t data_len = *packptr & 0b11111;
-		uint8_t rw = *packptr++ & 0b100000; //Ignoring bit 6 and 7 so far
-		uint16_t id =	*packptr++;
-		id |= *packptr++ << 8;
+		uint8_t rw = *packptr & 0b100000; //Ignoring bit 6 and 7 so far
+		packptr += 1;
+		uint16_t id;
+		memcpy(&id, packptr, 2);
+		packptr += 2;
 		core_remote_NRF.data_ready = NRF24L01_data_ready();
 		if(rw)
 		{

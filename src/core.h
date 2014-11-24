@@ -48,10 +48,12 @@ THE SOFTWARE.
 	#define CORE_ERROR_OUT_OF_FIELD_BOUNDS 4
 	#define CORE_ERROR_PERMISSION_DENIED 5
 	
-	extern uint8_t core_setup(uint16_t fieldnum);
+	extern uint8_t core_init(uint16_t fieldnum);
 	extern uint8_t core_register_field(uint16_t id, uint8_t* fieldptr, uint16_t length, uint8_t r, uint8_t w);
 	extern uint8_t core_unregister_field(uint16_t id);
 	extern uint8_t core_write_field_ext(uint16_t id, uint8_t* data, uint16_t offset, uint16_t length);
+	extern uint8_t core_read_field(uint16_t id, uint8_t* data, uint16_t offset, uint16_t length);
+	extern uint8_t core_write_field(uint16_t id, uint8_t* data, uint16_t offset, uint16_t length);
 	extern uint8_t core_read_field_ext(uint16_t id, uint8_t* data, uint16_t offset, uint16_t length);
 	extern uint8_t core_set_write_callback(void (*callback)(uint16_t));
 	extern uint8_t core_clear_write_callback(void);

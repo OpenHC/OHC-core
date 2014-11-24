@@ -25,7 +25,7 @@ uint16_t			core_fieldnum = 0;
 void				(*core_write_callback)(uint16_t);
 
 //Initializes OHC_CORE. Must be called before calling any other functions from core
-uint8_t core_setup(uint16_t fieldnum)
+uint8_t core_init(uint16_t fieldnum)
 {
 	if(fieldnum > 0)
 	{
