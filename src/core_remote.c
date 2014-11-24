@@ -86,6 +86,7 @@ uint8_t core_remote_write_field(uint8_t* addr, uint8_t addr_len, uint16_t id, ui
 
 uint8_t core_remote_main(void)
 {
+	uint8_t exit_code = CORE_OK;
 	if(core_remote_NRF.data_ready)
 	{
 		uint8_t* data = malloc(WIRELESS_PACK_LEN);
@@ -98,10 +99,11 @@ uint8_t core_remote_main(void)
 		uint8_t rw = *packptr++ & 0b100000; //Ignoring bit 6 and 7 so far
 		uint16_t id =	*packptr++;
 		id |= *packptr++ << 8;
+		core_remote_NRF.data_ready = NRF24L01_data_ready();
 		if(rw)
 		{
 			//Write
-			core_write_field_ext(id, packptr, 0, data_len);
+			exit_code = core_write_field_ext(id, packptr, 0, data_len);
 		}
 		else
 		{
@@ -109,7 +111,7 @@ uint8_t core_remote_main(void)
 		}
 		free(data);
 	}
-	return CORE_OK;
+	return exit_code;
 }
 
 ISR(INT0_vect)
