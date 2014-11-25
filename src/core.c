@@ -37,6 +37,7 @@ uint8_t core_init(uint16_t fieldnum)
 	return CORE_OK;
 }
 
+//Register a data field on this device. IDs start at 0
 uint8_t core_register_field(uint16_t id, uint8_t* fieldptr, uint16_t length, uint8_t r, uint8_t w)
 {
 	if(id >= core_fieldnum)
@@ -52,6 +53,7 @@ uint8_t core_register_field(uint16_t id, uint8_t* fieldptr, uint16_t length, uin
 	return CORE_OK;
 }
 
+//Unregisters a data field on this device. IDs start at 0
 uint8_t core_unregister_field(uint16_t id)
 {
 	if(id >= core_fieldnum)
@@ -61,6 +63,8 @@ uint8_t core_unregister_field(uint16_t id)
 	return CORE_OK;
 }
 
+//Writes data to a field. Use for local field writes.
+//Ignores field permissions
 uint8_t core_write_field(uint16_t id, uint8_t* data, uint16_t offset, uint16_t length)
 {
 	if(id >= core_fieldnum)
@@ -76,6 +80,8 @@ uint8_t core_write_field(uint16_t id, uint8_t* data, uint16_t offset, uint16_t l
 	return CORE_OK;
 }
 
+//Reads data from a field. Use for local field reads.
+//Ignores field permissions
 uint8_t core_read_field(uint16_t id, uint8_t* data, uint16_t offset, uint16_t length)
 {
 	if(id >= core_fieldnum)
@@ -89,6 +95,8 @@ uint8_t core_read_field(uint16_t id, uint8_t* data, uint16_t offset, uint16_t le
 	return CORE_OK;
 }
 
+//Writes data to a field. Used for remote field writes.
+//Respects field permissions
 uint8_t core_write_field_ext(uint16_t id, uint8_t* data, uint16_t offset, uint16_t length)
 {
 	if(id >= core_fieldnum)
@@ -106,6 +114,8 @@ uint8_t core_write_field_ext(uint16_t id, uint8_t* data, uint16_t offset, uint16
 	return CORE_OK;
 }
 
+//Reads data from a field. Used for remote field writes.
+//Respects field permissions
 uint8_t core_read_field_ext(uint16_t id, uint8_t* data, uint16_t offset, uint16_t length)
 {
 	if(id >= core_fieldnum)
@@ -121,12 +131,14 @@ uint8_t core_read_field_ext(uint16_t id, uint8_t* data, uint16_t offset, uint16_
 	return CORE_OK;
 }
 
+//Sets a callback function to get called on field writes
 uint8_t core_set_write_callback(void (*callback)(uint16_t))
 {
 	core_write_callback = callback;
 	return CORE_OK;
 }
 
+//Removes the set callback function
 uint8_t core_clear_write_callback(void)
 {
 	core_write_callback = NULL;
