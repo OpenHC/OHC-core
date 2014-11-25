@@ -29,6 +29,8 @@ struct
 	uint8_t data_ready:1;
 } core_remote_NRF;
 
+//Sets up NRF24L01 lib and module. Must be called before usage of any
+//core_remote_* functions
 uint8_t core_remote_init(uint8_t* addr, uint8_t addr_len)
 {
 	//Initialze flags
@@ -53,6 +55,7 @@ uint8_t core_remote_init(uint8_t* addr, uint8_t addr_len)
 	return CORE_OK;
 }
 
+//Writes a field on a remote device if permitted
 uint8_t core_remote_write_field(uint8_t* addr, uint8_t addr_len, uint16_t id, uint8_t* data, uint16_t offset, uint16_t length)
 {
 	if(addr_len < NRF24L01_CONST_MIN_ADDR_LEN)
@@ -84,6 +87,9 @@ uint8_t core_remote_write_field(uint8_t* addr, uint8_t addr_len, uint16_t id, ui
 	return CORE_OK;
 }
 
+//Call in main program loop. Handles data reception.
+//Main program loop must use sleep functions and wake
+//up on external interrupt
 uint8_t core_remote_main(void)
 {
 	uint8_t exit_code = CORE_OK;
@@ -116,6 +122,7 @@ uint8_t core_remote_main(void)
 	return exit_code;
 }
 
+//NRF24L01 event handler. Sets flags for core_remote_main
 ISR(INT0_vect)
 {
 	uint8_t status = NRF24L01_get_status();
