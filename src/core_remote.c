@@ -88,7 +88,7 @@ uint8_t core_remote_write_field(uint8_t* addr, uint8_t addr_len, uint16_t id, ui
 }
 
 //Call in main program loop. Handles data reception.
-//Main program loop must use sleep functions and wake
+//Main program loop must use the sleep function and wake
 //up on external interrupt
 uint8_t core_remote_main(void)
 {
