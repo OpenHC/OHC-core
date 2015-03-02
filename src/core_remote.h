@@ -51,17 +51,9 @@ Data packet
 
 #ifndef __OHC_CORE_REMOTE_H__
 #define __OHC_CORE_REMOTE_H__
-	
-	//Typedef
-	typedef struct
-	{
-		uint8_t*	my_challenge;
-		uint8_t*	remote_challenge;
-		uint16_t	packet_counter;
-		uint16_t	length;
-	}
-	ohc_core_remote_connection_t;
 
+	#include "core_remote_connection.h"
+	
 	//Exit codes
 	#define CORE_REMOTE_ERROR_ADDR_TOO_SHORT	100
 	#define CORE_REMOTE_ERROR_ADDR_TOO_LONG		101
